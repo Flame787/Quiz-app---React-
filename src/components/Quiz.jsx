@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import QUESTIONS from "../questions.js";
+import QuestionTimer from "./QuestionTimer.jsx";
 import quizCompletedImg from "../assets/quiz-complete.png";
 
 export default function Quiz() {
@@ -17,8 +18,6 @@ export default function Quiz() {
   // next index = 1 ==> this means 2nd question etc.
   // We want to manage as little state as possible, and DERRIVE as much state as possible.
   const activeQuestionIndex = userAnswers.length;
-
-
 
   const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
   // with this check, we make sure that we can't exceed the number of questions we have.
@@ -60,6 +59,11 @@ export default function Quiz() {
   return (
     <div id="quiz">
       <div id="question">
+        <QuestionTimer
+          timeout={10000}
+          onTimeout={() => handleSelectAnswer(null)}
+        />
+
         <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
         <ul id="answers">
           {shuffledAnswers.map((answer) => (
