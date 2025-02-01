@@ -22,7 +22,8 @@ export default function Quiz() {
   // because all answers are connected to the questions in the questions.js file
 
   // new state, that's controlling the current answer's state (is it answered, or not):
-  const [answerState, setAnswerState] = useState(""); // initially we can have an empty string (not answered)
+  // const [answerState, setAnswerState] = useState(""); // initially we can have an empty string (not answered)
+  // -> state not needed anymore, logic is moved into better suited Question-component, where it's more needed
 
   const [userAnswers, setUserAnswers] = useState([]);
 
@@ -30,8 +31,8 @@ export default function Quiz() {
   // if activeQuestionIndex is 0, then we are showing the 1st question to the user,
   // next index = 1 ==> this means 2nd question etc.
   // We want to manage as little state as possible, and DERRIVE as much state as possible.
-  const activeQuestionIndex =
-    answerState === "" ? userAnswers.length : userAnswers.length - 1;
+  // const activeQuestionIndex = answerState === "" ? userAnswers.length : userAnswers.length - 1;
+    const activeQuestionIndex = userAnswers.length;
   // activeQuestionIndex is equal to userAnswers.length, if the current answerState is an empty string (if
   // the question was not answered yet), otherwise (:) it should be equal to userAnswers.length - 1
 
@@ -42,7 +43,7 @@ export default function Quiz() {
   const handleSelectAnswer = useCallback(
     function handleSelectAnswer(selectedAnswer) {
       // adding new state:
-      setAnswerState("answered");
+      // setAnswerState("answered"); - not needed here
 
       setUserAnswers((prevUserAnswers) => {
         return [...prevUserAnswers, selectedAnswer];
@@ -51,24 +52,24 @@ export default function Quiz() {
       // updating state: copying all previous states (useAnswers) + adding newly selected answer to the list
 
       // adding new timeout (nested) - after 1 sec we change the state of selected answer to correct or wrong:
-      setTimeout(() => {
-        if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
-          // if user selected answer which is also the 1st answer in our Questions-file under this question[index]:
-          setAnswerState("correct");
-        } else {
-          setAnswerState("wrong");
-        }
+      // setTimeout(() => {
+      //   if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
+      //     // if user selected answer which is also the 1st answer in our Questions-file under this question[index]:
+      //     setAnswerState("correct");
+      //   } else {
+      //     setAnswerState("wrong");
+      //   }
 
         // reseting to the empty string - via this new timer, which is nested into a bigger timer:
-        setTimeout(() => {
-          setAnswerState("");
-        }, 2000);
-        // here ends new nested timer. It lasts for 2 extra sec, when we highlight the selected answer.
-        // (short period after user answered the question), but before it was switched to next question.
-        // -> during those 2 sec, the selected answer will be marked green if correct, or red if incorrect.
-      }, 1000);
-    },
-    [activeQuestionIndex]
+      //   setTimeout(() => {
+      //     setAnswerState("");
+      //   }, 2000);
+      //   // here ends new nested timer. It lasts for 2 extra sec, when we highlight the selected answer.
+      //   // (short period after user answered the question), but before it was switched to next question.
+      //   // -> during those 2 sec, the selected answer will be marked green if correct, or red if incorrect.
+      // }, 1000);
+    }, []
+    // [activeQuestionIndex] - no longer needed as dependancy, it was needed for timers, which we moved away.
   );
   // Dependency list was initially empty, because in handleSelectAnswer we are not using any state or props,
   // or any other values that depend on state or props.
@@ -122,11 +123,12 @@ export default function Quiz() {
   return (
     <div id="quiz">
       <Question
-        key={activeQuestionIndex}  // using the single key, instead of 2 same keys in children-components
-        questionText={QUESTIONS[activeQuestionIndex].text}  
-        answers={QUESTIONS[activeQuestionIndex].answers}
-        answerState={answerState}
-        selectedAnswer={userAnswers[userAnswers.length - 1]}
+        key={activeQuestionIndex} // using the single key, instead of 2 same keys in children-components
+        index={activeQuestionIndex}  // we must use our own prop, even if the value is the same as in key. 
+        // questionText={QUESTIONS[activeQuestionIndex].text}    // removing reduntant props
+        // answers={QUESTIONS[activeQuestionIndex].answers}
+        // answerState={answerState}
+        // selectedAnswer={userAnswers[userAnswers.length - 1]}
         onSelectAnswer={handleSelectAnswer}
         onSkipAnswer={handleSkipAnswer}
       />
