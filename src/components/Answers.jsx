@@ -1,17 +1,21 @@
 import { useRef } from "react";
 
-export default function Answers({answers, selectedAnswer, answerState, onSelect}) {
+export default function Answers({
+  answers,
+  selectedAnswer,
+  answerState,
+  onSelect,
+}) {
+  const shuffledAnswers = useRef();
 
-    const shuffledAnswers = useRef();
-    
-// wrapping the shuffledAnswers.current with this logic:  -> later moved to Answers.jsx-component
+  // wrapping the shuffledAnswers.current with this logic:  -> later moved to Answers.jsx-component
   // if shuffledAnswers.current is undefined/not truethy, then there are no shuffeled answers (initial state):
   // only then will the answers be shuffled - once,
   // but if they were already shuffled (if condition is truethy), then the following code will not be executed:
   if (!shuffledAnswers.current) {
     // const shuffledAnswers = [...QUESTIONS[activeQuestionIndex].answers];
     // shuffledAnswers.current = [...QUESTIONS[activeQuestionIndex].answers];
-    shuffledAnswers.current = [...answers];  // using answers as prop here
+    shuffledAnswers.current = [...answers]; // using answers as prop here
     // we will sort new array and not original saved array 'questions' (it must always stay in initial order)
     shuffledAnswers.current.sort(() => Math.random() - 0.5);
     // sort() has as function as argument, which always receives 2 elements from array.
@@ -27,7 +31,7 @@ export default function Answers({answers, selectedAnswer, answerState, onSelect}
   }
 
   return (
-    // cut the <ul> from the Quiz-component-return and pasted it here: 
+    // cut the <ul> from the Quiz-component-return and pasted it here:
     <ul id="answers">
       {/* {shuffledAnswers.map((answer) => { */}
       {shuffledAnswers.current.map((answer) => {
@@ -52,9 +56,12 @@ export default function Answers({answers, selectedAnswer, answerState, onSelect}
         return (
           <li key={answer} className="answer">
             <button
-            //   onClick={() => handleSelectAnswer(answer)}
+              // onClick={() => handleSelectAnswer(answer)}
               onClick={() => onSelect(answer)}
               className={cssClass}
+              disabled={answerState != ""}
+              // disabled-prop = is making sure that we cannot click on other answers, if we already selected an answer.
+              // button should get disabled, if answer is not equal to empty string (if something was already selected)
             >
               {answer}
             </button>

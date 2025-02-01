@@ -7,15 +7,16 @@ import Answers from "./Answers";
 
 import QUESTIONS from "../questions.js";
 
-export default function Question(  // list of props:
-  {index,   // initially: 'key', but we must rename this prop, as we cannot use 'key' as a prop
+export default function Question({
+  // list of props:
+  index, // initially: 'key', but we must rename this prop, as we cannot use 'key' as a prop
   //   questionText,   // removing props which are not needed, once we have more logic in this component
   //   answers,
   onSelectAnswer,
   //   selectedAnswer,
   //   answerState,
-  onSkipAnswer}
-) {
+  onSkipAnswer,
+}) {
   // moving logic to the places where it belogs:
   const [answer, setAnswer] = useState({
     selectedAnswer: "",
@@ -47,9 +48,14 @@ export default function Question(  // list of props:
   // new: a helper-variable:
   let answerState = "";
 
-  if (answer.selectedAnswer) {
+  // checking if selected answer is truethy and if there is an answer already selected (not null),
+  // but we don't want to show the result yet:
+  if (answer.selectedAnswer && answer.isCorrect !== null) {
     answerState = answer.isCorrect ? "correct" : "wrong";
-  }
+  } else if (answer.selectedAnswer) {
+    answerState = "answered";
+  } // if only 1st condition is met, but not 2nd, then it get's css-class 'selected', but not yet true or false
+  
 
   return (
     <div id="question">
@@ -69,8 +75,6 @@ export default function Question(  // list of props:
         // onTimeout={handleSkipAnswer}
         onTimeout={onSkipAnswer}
       />
-
-    
 
       {/* <h2>{QUESTIONS[index].text}</h2> */}
 
