@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
-export default function QuestionTimer({ timeout, onTimeout }) {
+export default function QuestionTimer({ timeout, onTimeout, mode }) {
+  // mode - for css-styling purposes
   const [remainingTime, setRemainingTime] = useState(timeout);
 
   // To prevent that the setTimeout runs again every time the state is updated,
@@ -44,5 +45,5 @@ export default function QuestionTimer({ timeout, onTimeout }) {
   // Therefore, we need a cleanup-function for interval. Then, it doesn't matter if the interval is called 10x,
   // because we always clean up old intervals, and only one will be up and running at one time.
 
-  return <progress id="question-time" max={timeout} value={remainingTime} />;
+  return <progress id="question-time" max={timeout} value={remainingTime} className={mode} />;
 }
