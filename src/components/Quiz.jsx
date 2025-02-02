@@ -6,8 +6,7 @@ import QUESTIONS from "../questions.js";
 // import QuestionTimer from "./QuestionTimer.jsx"; // importing a child component
 // import Answers from "./Answers.jsx";
 import Question from "./Question.jsx";
-
-import quizCompletedImg from "../assets/quiz-complete.png";
+import Summary from "./Summary.jsx";
 
 export default function Quiz() {
   // state-logic to manage currently active question, change to different question, store the answers
@@ -32,7 +31,7 @@ export default function Quiz() {
   // next index = 1 ==> this means 2nd question etc.
   // We want to manage as little state as possible, and DERRIVE as much state as possible.
   // const activeQuestionIndex = answerState === "" ? userAnswers.length : userAnswers.length - 1;
-    const activeQuestionIndex = userAnswers.length;
+  const activeQuestionIndex = userAnswers.length;
   // activeQuestionIndex is equal to userAnswers.length, if the current answerState is an empty string (if
   // the question was not answered yet), otherwise (:) it should be equal to userAnswers.length - 1
 
@@ -60,7 +59,7 @@ export default function Quiz() {
       //     setAnswerState("wrong");
       //   }
 
-        // reseting to the empty string - via this new timer, which is nested into a bigger timer:
+      // reseting to the empty string - via this new timer, which is nested into a bigger timer:
       //   setTimeout(() => {
       //     setAnswerState("");
       //   }, 2000);
@@ -68,7 +67,8 @@ export default function Quiz() {
       //   // (short period after user answered the question), but before it was switched to next question.
       //   // -> during those 2 sec, the selected answer will be marked green if correct, or red if incorrect.
       // }, 1000);
-    }, []
+    },
+    []
     // [activeQuestionIndex] - no longer needed as dependancy, it was needed for timers, which we moved away.
   );
   // Dependency list was initially empty, because in handleSelectAnswer we are not using any state or props,
@@ -88,12 +88,13 @@ export default function Quiz() {
 
   // if we went through all questions, we should display something else (and not questions anymore):
   if (quizIsComplete) {
-    return (
-      <div id="summary">
-        <img src={quizCompletedImg} alt="Trophy icon" />
-        <h2>Quiz completed!</h2>
-      </div>
-    );
+    // return (
+    //   <div id="summary">
+    //     <img src={quizCompletedImg} alt="Trophy icon" />
+    //     <h2>Quiz completed!</h2>
+    //   </div>
+    // );
+    return <Summary userAnswers={userAnswers} />;
   }
 
   // This logic executes only if we still have some questions to display (not before, it would break the code):
@@ -124,7 +125,7 @@ export default function Quiz() {
     <div id="quiz">
       <Question
         key={activeQuestionIndex} // using the single key, instead of 2 same keys in children-components
-        index={activeQuestionIndex}  // we must use our own prop, even if the value is the same as in key. 
+        index={activeQuestionIndex} // we must use our own prop, even if the value is the same as in key.
         // questionText={QUESTIONS[activeQuestionIndex].text}    // removing reduntant props
         // answers={QUESTIONS[activeQuestionIndex].answers}
         // answerState={answerState}
